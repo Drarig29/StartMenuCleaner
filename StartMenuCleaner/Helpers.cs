@@ -1,5 +1,7 @@
-﻿using System.IO;
-using System.Windows.Controls;
+﻿using System;
+using StartMenuCleaner.Model;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace StartMenuCleaner {
 
@@ -12,38 +14,53 @@ namespace StartMenuCleaner {
             var files = Directory.GetFiles(parent, "*", SearchOption.TopDirectoryOnly);
 
             foreach (var file in files) {
-                var fileName = Path.GetFileName(file);
-                if (fileName == null || fileName == "desktop.ini") continue;
+                var filename = Path.GetFileName(file);
+                if (filename == null || IsDesktopIni(filename)) continue;
 
                 var fileInfo = new FileInfo(file);
-                fileInfo.MoveTo(Path.Combine(parent, Constants.PROGRAM_FOLDER, fileName));
+                fileInfo.MoveTo(Path.Combine(parent, Constants.PROGRAM_FOLDER, filename));
             }
         }
 
         /// <summary>
-        /// Generates a tree with files and folders starting from a root.
+        /// Generates a tree with files and directories starting from a root.
         /// </summary>
         /// <param name="root">The root directory.</param>
         /// <returns>The generated tree.</returns>
-        public static TreeViewItem RecursiveTree(string root) {
-            var item = new TreeViewItem {
-                Header = root
+        public static DirectoryItem RecursiveTree(string root) {
+            var directory = new DirectoryItem {
+                Path = root,
+                Filename = Path.GetFileName(root)
             };
 
-            var folders = Directory.GetDirectories(root, "*", SearchOption.TopDirectoryOnly);
-            foreach (var folder in folders) {
-                var tree = RecursiveTree(folder);
-                item.Items.Add(tree);
+            var directories = Directory.GetDirectories(root, "*", SearchOption.TopDirectoryOnly);
+            foreach (var dir in directories) {
+                var tree = RecursiveTree(dir);
+                directory.Files.Add(tree);
             }
 
             var files = Directory.GetFiles(root, "*", SearchOption.TopDirectoryOnly);
             foreach (var file in files) {
-                if (Path.GetFileName(file) == "desktop.ini") continue;
-                var fileItem = new TreeViewItem {Header = file};
-                item.Items.Add(fileItem);
+                var filename = Path.GetFileName(file);
+                if (IsDesktopIni(filename)) continue;
+
+                var fileItem = new FileItem {Filename = filename, Path = file};
+                directory.Files.Add(fileItem);
             }
 
-            return item;
+            return directory;
+        }
+
+        private static bool IsDesktopIni(string filename) {
+            return Regex.IsMatch(filename, "desktop\\.ini", RegexOptions.IgnoreCase);
+        }
+
+        public static string AppDataFolder() {
+            return Environment.ExpandEnvironmentVariables(Constants.APP_DATA_START_MENU);
+        }
+
+        public static string ProgramDataFolder() {
+            return Constants.PROGRAM_DATA_START_MENU;
         }
     }
 }

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:model="clr-namespace:StartMenuCleaner.Model"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1200">
 
@@ -20,7 +21,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <StackPanel Grid.Column="0" Margin="6">
             <Button Click="RefreshTree_Click">Refresh tree</Button>
             <Button Click="EmptyParentFolders_Click">Empty parent folder</Button>
@@ -28,7 +29,22 @@
             <Button Click="OpenProgramDataFolder_Click">Open Program Data folder</Button>
         </StackPanel>
 
-        <TreeView Grid.Column="1" x:Name="fileTree" Margin="5" />
+        <TreeView Grid.Column="1" x:Name="fileTree" Margin="5">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type model:DirectoryItem}" ItemsSource="{Binding Files}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Icons/directory.ico" Margin="0,0,5,0" Width="20" />
+                        <TextBlock Text="{Binding Filename}" ToolTip="{Binding Path}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type model:FileItem}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Icons/file.ico" Margin="0,0,5,0" Width="20" />
+                        <TextBlock Text="{Binding Filename}" ToolTip="{Binding Path}" />
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
     </Grid>
 
 </Window>

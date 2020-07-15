@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
@@ -17,11 +18,11 @@ namespace StartMenuCleaner {
         }
 
         private void OpenAppDataFolder_Click(object sender, RoutedEventArgs e) {
-            Process.Start("explorer", Constants.APP_DATA_START_MENU);
+            Process.Start("explorer", Helpers.AppDataFolder());
         }
 
         private void OpenProgramDataFolder_Click(object sender, RoutedEventArgs e) {
-            Process.Start("explorer", Constants.PROGRAM_DATA_START_MENU);
+            Process.Start("explorer", Helpers.ProgramDataFolder());
         }
 
         private void RefreshTree_Click(object sender, RoutedEventArgs e) {
@@ -30,7 +31,7 @@ namespace StartMenuCleaner {
 
         private void RefreshTree() {
             var tree = Helpers.RecursiveTree(Path.Combine(Constants.PROGRAM_DATA_START_MENU, Constants.PROGRAM_FOLDER));
-            fileTree.Items.Add(tree);
+            fileTree.ItemsSource = tree.Files;
         }
     }
 }
