@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 namespace StartMenuCleaner {
@@ -7,6 +8,7 @@ namespace StartMenuCleaner {
 
         public MainWindow() {
             InitializeComponent();
+            RefreshTree();
         }
 
         private void EmptyParentFolders_Click(object sender, RoutedEventArgs e) {
@@ -22,8 +24,13 @@ namespace StartMenuCleaner {
             Process.Start("explorer", Constants.PROGRAM_DATA_START_MENU);
         }
 
-        private void BackupFolders_Click(object sender, RoutedEventArgs e) {
-            
+        private void RefreshTree_Click(object sender, RoutedEventArgs e) {
+            RefreshTree();
+        }
+
+        private void RefreshTree() {
+            var tree = Helpers.RecursiveTree(Path.Combine(Constants.PROGRAM_DATA_START_MENU, Constants.PROGRAM_FOLDER));
+            fileTree.Items.Add(tree);
         }
     }
 }

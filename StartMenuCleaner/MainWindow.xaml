@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="1200">
 
     <Window.Resources>
         <Style TargetType="Button">
@@ -16,12 +16,19 @@
     </Window.Resources>
 
     <Grid>
-        <StackPanel Margin="6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Column="0" Margin="6">
+            <Button Click="RefreshTree_Click">Refresh tree</Button>
             <Button Click="EmptyParentFolders_Click">Empty parent folder</Button>
             <Button Click="OpenAppDataFolder_Click">Open App Data folder</Button>
             <Button Click="OpenProgramDataFolder_Click">Open Program Data folder</Button>
-            <Button Click="BackupFolders_Click">Backup folders</Button>
         </StackPanel>
+
+        <TreeView Grid.Column="1" x:Name="fileTree" Margin="5" />
     </Grid>
 
 </Window>
